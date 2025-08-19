@@ -3,7 +3,7 @@
 #include <vector>
 #include <mutex>
 #include <thread>   // for sleep_for
-#include <chrono>   // for seconds
+
 
 // ANSI escape codes
 #define RESET   "\033[0m"
@@ -25,6 +25,7 @@ public:
     virtual void lockPath(std::vector<std::pair<int,int>>& path) = 0;
     virtual void unlockPath(std::pair<int,int> coord) = 0;
     virtual void showGrid() = 0;
+    virtual void setGrid(vector<int>& coord) = 0;
     virtual std::pair<int,int> getMazeSize() = 0;
 };
 
@@ -48,8 +49,6 @@ public:
         // TODO: must unlock this coordinate by calling unlock path (using prev coord)
         int newX = newCord[0];
         int newY = newCord[1];
-        // Take 1 second sleep for accurate simulation 
-        std::this_thread::sleep_for(std::chrono::seconds(1)); 
         std::lock_guard<std::mutex> lock(mtx);
         maze[prevX][prevY] = 0;
         maze[newX][newY] = id;
@@ -67,13 +66,17 @@ public:
         cout<<"-----------------------------------------"<<endl;
         for(int i=0; i<maze.size(); i++) {
             for(int j=0; j<maze[0].size(); j++) {
-                if(maze[i][j] == 1) cout << "| " << GREEN << maze[i][j] << RESET << " ";
+                if(maze[i][j] == 1) cout << "| " << GREEN << BOLD << maze[i][j] << RESET << " ";
                 else if(maze[i][j] != 0) cout << "| " << RED << BOLD << maze[i][j] << RESET << " ";
                 else cout<<"| "<< maze[i][j]<<" ";
             }
             cout<<"|"<<endl;
             cout<<"-----------------------------------------"<<endl;
         }
+    }
+
+    void setGrid(vector<int>& coord) override {
+        maze[coord[0]][coord[1]] = 1;
     }
 
     std::pair<int,int> getMazeSize() override {

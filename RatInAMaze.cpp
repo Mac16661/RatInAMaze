@@ -24,9 +24,11 @@ int main() {
 
     std::thread worker(printLoop, openMaze);  
 
+    vector<vector<int>> tasks = {{0,3}, {1,7}, {0,8}, {2,1}};
+    for(auto task: tasks) openMaze->setGrid(task);
+    
     // creating robot units
-    Unit a1 = Unit(openMaze, 5);
-    vector<vector<int>> tasks = {{5,8}, {9,3}, {5,8}, {7,3}, {5,8}, {9,3}, {5,8}, {3,9}, {5,8}, {9,3}, {1,4}, {9,3}};
+    Unitv1 a1 = Unitv1(openMaze, 5, "");
     a1.runBot(tasks);
     
     keepRunning = false;
