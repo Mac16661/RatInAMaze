@@ -19,18 +19,29 @@ void printLoop(Maze* openMaze) {
     }
 }
 
+void runBot(vector<vector<int>>& tasks, Maze* openMaze, int id) {
+    // creating robot units
+    Unitv1 a1 = Unitv1(openMaze, id, "");
+    a1.runBot(tasks);
+}
+
 int main() {
-    Maze* openMaze = new OpenMaze(10, 10);
+    Maze* openMaze = new OpenMaze(10, 50);
 
     std::thread worker(printLoop, openMaze);  
 
-    vector<vector<int>> tasks = {{0,3}, {1,7}, {0,8}, {2,1}};
-    for(auto task: tasks) openMaze->setGrid(task);
+    vector<vector<int>> tasks1 = {{0,3}, {1,7}, {0,8}, {2,1}};
+    for(auto task: tasks1) openMaze->setGrid(task);
+
+    vector<vector<int>> tasks2 = {{1,3}, {2,8}, {8,8}, {5,1}};
+    for(auto task: tasks2) openMaze->setGrid(task);
     
-    // creating robot units
-    Unitv1 a1 = Unitv1(openMaze, 5, "");
-    a1.runBot(tasks);
-    
+    std::thread u1(runBot, ref(tasks1), openMaze, 13);
+    std::thread u2(runBot, ref(tasks2), openMaze, 35);
+    u2.join();
+    u1.join();
+
+    std::this_thread::sleep_for(std::chrono::seconds(3)); 
     keepRunning = false;
     worker.join();   // wait for it to exit
 

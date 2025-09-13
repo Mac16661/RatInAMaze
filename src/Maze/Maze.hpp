@@ -36,7 +36,7 @@ private:
     std::mutex mtx;  // protect updates
 public:
     OpenMaze(int n, int m): n(n), m(m) {
-        maze = std::vector<std::vector<int>>(n, std::vector<int>(m, 0));
+        maze = std::vector<std::vector<int>>(n, std::vector<int>(m, 1));
     }
 
     std::vector<std::vector<int>>& getMaze() override {
@@ -50,7 +50,7 @@ public:
         int newX = newCord[0];
         int newY = newCord[1];
         std::lock_guard<std::mutex> lock(mtx);
-        maze[prevX][prevY] = 0;
+        maze[prevX][prevY] = 1;
         maze[newX][newY] = id;
     }
 
@@ -63,20 +63,20 @@ public:
     }
 
     void showGrid() override {
-        cout<<"-----------------------------------------"<<endl;
+        cout<<string(201, '-')<<endl;
         for(int i=0; i<maze.size(); i++) {
             for(int j=0; j<maze[0].size(); j++) {
-                if(maze[i][j] == 1) cout << "| " << GREEN << BOLD << maze[i][j] << RESET << " ";
-                else if(maze[i][j] != 0) cout << "| " << RED << BOLD << maze[i][j] << RESET << " ";
-                else cout<<"| "<< maze[i][j]<<" ";
+                if(maze[i][j] == 0) cout << "| " << GREEN << BOLD << 0 << RESET << " ";
+                else if(maze[i][j] == 1) cout<<"| "<< " "<<" ";
+                else  cout << "| " << RED << BOLD << maze[i][j] << RESET << " ";
             }
             cout<<"|"<<endl;
-            cout<<"-----------------------------------------"<<endl;
+            cout<<string(201, '-')<<endl;
         }
     }
 
     void setGrid(vector<int>& coord) override {
-        maze[coord[0]][coord[1]] = 1;
+        maze[coord[0]][coord[1]] = 0;
     }
 
     std::pair<int,int> getMazeSize() override {
