@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <utility> 
+#include <queue>
 
 
 class PathFinder{
@@ -47,9 +48,61 @@ class Loop: public PathFinder {
 
 class BFS: public PathFinder {
     public:
-        void findPath(std::vector<int>& currPos, std::vector<int>& goal, std::vector<std::pair<int, int>>& plannedPath, std::vector<std::vector<int>>& maze) override {
-            
+        void findPath(std::vector<int>& currPos, std::vector<int>& goal, std::vector<std::pair<int, int>>& plannedPath,
+              std::vector<std::vector<int>>& maze) override {
+
+            int srcRow = currPos[0], srcCol = currPos[1];
+            int distRow = goal[0], distCol = goal[1];
+            int n = maze.size(), m = maze[0].size();
+
+            std::vector<std::pair<int, int>> dirs = { // Delebritely pushing diagonals in top to explore diagonals first
+                {-1, -1}, {-1, 1},
+                {1, -1},  {1, 1},
+                {-1, 0}, {0, -1}, {0, 1}, {1, 0}
+            };
+
+            std::queue<std::array<int, 3>> q;
+            q.push({srcRow, srcCol, 0});
+
+            std::vector<std::vector<bool>> visited(n, std::vector<bool>(m, false));
+            visited[srcRow][srcCol] = true;
+
+            // parent map to reconstruct path
+            std::map<std::pair<int,int>, std::pair<int,int>> parent;
+
+            while(!q.empty()) {
+                auto node = q.front();
+                q.pop();
+
+                int r = node[0], c = node[1], dist = node[2];
+
+                if (r == distRow && c == distCol) {
+                    // reconstruct path
+                    std::vector<std::pair<int,int>> path;
+                    std::pair<int,int> curr = {distRow, distCol};
+                    while (curr != std::make_pair(srcRow, srcCol)) {
+                        path.push_back(curr);
+                        curr = parent[curr];
+                    }
+                    path.push_back({srcRow, srcCol});
+                    std::reverse(path.begin(), path.end());
+                    plannedPath = path;
+                    return;
+                }
+
+                for (auto [dr, dc] : dirs) {
+                    int nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < n && nc >= 0 && nc < m &&
+                        !visited[nr][nc] && maze[nr][nc] != -1) {
+
+                        visited[nr][nc] = true;
+                        parent[{nr, nc}] = {r, c};
+                        q.push({nr, nc, dist + 1});
+                    }
+                }
+            }
         }
+
 
         ~BFS() override = default;
 };
