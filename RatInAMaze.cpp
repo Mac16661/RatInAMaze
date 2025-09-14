@@ -36,8 +36,8 @@ int main() {
     vector<vector<int>> tasks2 = {{1,3}, {2,8}, {8,8}, {5,1}};
     for(auto task: tasks2) openMaze->setGrid(task);
     
-    std::thread u1(runBot, ref(tasks1), openMaze, 13);
-    std::thread u2(runBot, ref(tasks2), openMaze, 35);
+    std::thread u1(runBot, ref(tasks1), openMaze, 9);
+    std::thread u2(runBot, ref(tasks2), openMaze, 8);
     u2.join();
     u1.join();
 
