@@ -63,16 +63,14 @@ The system focuses on:
 
 - UNIT delegates to:
 
-    - PathWeaver Engine → Congestion Control → Maze
+    - PathWeaver Engine -> Congestion Control -> Maze
 
-    - Deadlock Removal → Maze
+    - Deadlock Removal -> Maze
 
     - Maze directly when required
 
 
 ## Build and Run
-
-## ⚙️ Build & Run
 
 ### Build
 ```bash
@@ -86,3 +84,8 @@ g++ -std=c++17 \
 
 ./RatInAMaze
 ```
+
+## Result
+
+![robot in action](https://github.com/Mac16661/RatInAMaze/blob/main/RobotInAction.png?raw=true)
+
